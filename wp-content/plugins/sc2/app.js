@@ -1,11 +1,9 @@
-if(sc2.accessToken == null || sc2.accessToken == '')
-{
-  sc2.init({
-    app: 'steemian.app',
-    callbackURL: 'http://steemian.io/wp-content/plugins/sc2/callback.php',
-    scope: ['vote', 'comment']
-  });
-}
+sc2.init({
+  app: 'steemian.app',
+  callbackURL: 'http://steemian.io/wp-content/plugins/sc2/callback.php',
+  scope: ['vote', 'comment']
+});
+
 angular.module('app', ['ipCookie'])
   .config(['$locationProvider', function($locationProvider){
     $locationProvider.html5Mode(true);
