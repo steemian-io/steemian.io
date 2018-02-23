@@ -1,14 +1,17 @@
-<?php do_action( 'wen_associate_action_doctype' );?>
-
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
 <head>
+  <title>Call Back Page</title>
   <base href="/" />
+  <meta charset="UTF-8">
+  <meta id="viewport" name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
   <script src="sc2/angular.min.js"></script>
   <script src="sc2/angular-cookie.min.js"></script>
   <script src="sc2/sc2.min.js"></script>
   <script src="sc2/steem.min.js"></script>
   <script src="sc2/app.js"></script>
-<?php do_action( 'wen_associate_action_head' );?>
-<?php wp_head(); ?>
 </head>
 <body ng-app="app" <?php body_class(); ?>>
 <div ng-controller="SetCookies">
