@@ -1,20 +1,18 @@
-<!DOCTYPE html>
-<html lang="en" ng-app="app">
-<head>
-  <title>Call Back Page</title>
-  <base href="/" />
-  <meta charset="UTF-8">
-  <meta id="viewport" name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-  <script src="sc2/angular.min.js"></script>
-  <script src="sc2/angular-cookie.min.js"></script>
-  <script src="sc2/sc2.min.js"></script>
-  <script src="sc2/steem.min.js"></script>
-  <script src="sc2/app.js"></script>
-</head>
-<body ng-app="app" <?php body_class(); ?>>
-<div ng-controller="SetCookies">
+<?php
+/*
+ * Template Name: CallBack4SC2
+ * Description: A call back page template for SteemConnect V2.
+ */
+
+get_header(); ?>
+
+<script src="sc2/static/js/angular.min.js"></script>
+<script src="sc2/static/js/angular-cookie.min.js"></script>
+<script src="sc2/static/js/sc2.min.js"></script>
+<script src="sc2/static/js/steem.min.js"></script>
+<script src="sc2/static/js/app.js"></script>
+  
+<div ng-app="app" ng-controller="SetCookies">
   <!-- 成功时显示的div -->
   <div ng-show="isAuth()">
     <h3>在此页中主要是设置Cookies和及设置Steemian网站的登录信息</h3>
@@ -85,7 +83,10 @@
         wp_set_current_user($user_id, $username);
         wp_set_auth_cookie($user_id);
         do_action('wp_login', $username);
-    }
+        echo "success!";
+    }esle
+        echo "failed";
+    
     ?>
   </div>
   <!-- 失败时显示的div -->
@@ -94,6 +95,4 @@
   </div>
 </div>
 
-<?php wp_footer(); ?>
-</body>
-</html>
+<?php get_footer(); ?>

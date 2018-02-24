@@ -16,6 +16,7 @@
   do_action( 'wen_associate_action_doctype' );?>
 
 <head>
+<base href="/" />
 <?php
   /**
    * wen_associate_action_head hook

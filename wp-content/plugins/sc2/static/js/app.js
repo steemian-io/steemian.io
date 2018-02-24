@@ -1,12 +1,16 @@
 sc2.init({
   app: 'steemian.app',
-  callbackURL: 'http://steemian.io/wp-content/plugins/sc2/callback.php',
+  callbackURL: 'http://steemian.io/callback',
   scope: ['vote', 'comment']
 });
 
 angular.module('app', ['ipCookie'])
-  .config(['$locationProvider', function($locationProvider){
-    $locationProvider.html5Mode(true);
+  .config(['$locationProvider', function ($locationProvider) {
+    $locationProvider.html5Mode({
+      enabled: true,
+      requireBase: true,
+      rewriteLinks: false
+    });
   }])
   .controller('Main', function($scope, ipCookie) {
     $scope.loading = false;
@@ -81,7 +85,11 @@ angular.module('app', ['ipCookie'])
     };
 
     $scope.logout = function() {
+      //delete the cookie when logout
+      //ipCookie.remove('st_access_token');
+
       sc2.revokeToken(function (err, result) {
+        ipCookie.remove('st_access_token', {path:'/'});
         console.log('You successfully logged out', err, result);
         delete $scope.user;
         delete $scope.accessToken;
@@ -99,7 +107,9 @@ angular.module('app', ['ipCookie'])
       //get the details of an account
       //set the cookie
       ipCookie('st_access_token', $scope.accessToken, 
-            {expirationUnit: 'seconds', expires: $scope.expiresIn * 1});
+            {expirationUnit: 'seconds', 
+            expires: $scope.expiresIn * 1,
+            path: '/'});
       sc2.me(function (err, result) {
         console.log('/me', err, result);
         if (!err) {

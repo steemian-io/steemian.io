@@ -10,11 +10,11 @@ License: GPLv2
 function sc2_steemian_add_js_css()
 {
     // 注册 Angular, sc2 及 steem 脚本        
-    wp_register_script('ss_angular',  plugin_dir_url(__FILE__) . 'angular.min.js','', false, false);
-    wp_register_script('ss_angular_cookie', plugin_dir_url(__FILE__) . 'angular-cookie.min.js', array('ss_angular'), false, false);
-    wp_register_script('ss_sc2', plugin_dir_url(__FILE__) . 'sc2.min.js', array('ss_angular', 'ss_angular_cookie'), false, false);
-    wp_register_script('ss_steem', plugin_dir_url(__FILE__) . 'steem.min.js', array('ss_angular', 'ss_angular_cookie', 'ss_sc2'), false, false);
-    wp_register_script('ss_app', plugin_dir_url(__FILE__) . 'app.js', array('ss_angular', 'ss_angular_cookie', 'ss_sc2', 'ss_steem'), false, false);
+    wp_register_script('ss_angular',  plugin_dir_url(__FILE__) . 'static/js/angular.min.js','', false, false);
+    wp_register_script('ss_angular_cookie', plugin_dir_url(__FILE__) . 'static/js/angular-cookie.min.js', array('ss_angular'), false, false);
+    wp_register_script('ss_sc2', plugin_dir_url(__FILE__) . 'static/js/sc2.min.js', array('ss_angular', 'ss_angular_cookie'), false, false);
+    wp_register_script('ss_steem', plugin_dir_url(__FILE__) . 'static/js/steem.min.js', array('ss_angular', 'ss_angular_cookie', 'ss_sc2'), false, false);
+    wp_register_script('ss_app', plugin_dir_url(__FILE__) . 'static/js/app.js', array('ss_angular', 'ss_angular_cookie', 'ss_sc2', 'ss_steem'), false, false);
     // 提交加载 Angular, sc2 及 steem 脚本
     wp_enqueue_script('ss_angular');
     wp_enqueue_script('ss_angular_cookie'); 
@@ -22,7 +22,7 @@ function sc2_steemian_add_js_css()
     wp_enqueue_script('ss_steem'); 
     wp_enqueue_script('ss_app'); 
     
-    wp_register_style('ss_style', plugin_dir_url(__FILE__) . 'ss_style.css',  array(), '', 'all');  
+    wp_register_style('ss_style', plugin_dir_url(__FILE__) . 'static/css/ss_style.css',  array(), '', 'all');  
     wp_enqueue_style('ss_style');  
 }
 //创建一个Widget，用于登录及显示登录后的成功信息
@@ -75,5 +75,17 @@ function reg_sc2_steemian_page_widget() {
     register_widget('SC2_Steemian_Pages_Widget');
  
 }
+
+/* 注册激活插件时要调用的函数 */ 
+register_activation_hook(__FILE__, 'sync_ws_install');   
+/* 注册停用插件时要调用的函数 */ 
+register_deactivation_hook(__FILE__, 'sync_ws_remove' );  
+function sync_ws_install() {  
+    /* 在数据库的 wp_options 表中添加一条记录，第二个参数为默认值 */ 
+}
+function sync_ws_remove() {  
+    /* 删除 wp_options 表中的对应记录 */ 
+}
 add_action( 'widgets_init', 'reg_sc2_steemian_page_widget' );
+add_action('wp_enqueue_scripts', 'sc2_steemian_add_js_css' );
 ?>
