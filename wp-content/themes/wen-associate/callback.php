@@ -3,7 +3,6 @@
  * Template Name: CallBack4SC2
  * Description: A call back page template for SteemConnect V2.
  */
-require('wp-blog-header.php');
 get_header(); ?>
   
 <div ng-controller="SetCookies">
@@ -11,6 +10,7 @@ get_header(); ?>
   <div ng-show="isAuth()">
     <h3>在此页中主要是设置Cookies和及设置Steemian网站的登录信息</h3>
     <?php
+    //由于此方法需要发送request请求，所以弃用，直接登录。
     function isAuthed(){
         $token =  $_GET["access_token"];
         $rqt_url = "https://steemconnect.com/api/me";
@@ -23,6 +23,7 @@ get_header(); ?>
         curl_setopt($ch, CURLOPT_URL, $rqt_url);//请求地址
         curl_setopt($ch, CURLOPT_POST, true);  //POST
         curl_setopt($ch, CURLOPT_HEADER, false);
+        //此行对调试有较大帮助，调试时可以打开，调试完成后注释掉
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         //curl_setopt($ch, CURLOPT_TIMEOUT, 8);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
@@ -31,20 +32,9 @@ get_header(); ?>
         $abc = json_decode($r, true);
         return json_decode($r, true);
     }
-    function generate_password( $length = 8 ) {
-        // 密码字符集，可任意添加你需要的字符
-        $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_ []{}<>~`+=,.;:/?|';
-
-        $password = '';
-        for ( $i = 0; $i < $length; $i++ ) 
-        {
-            // 这里提供两种字符获取方式
-            // 第一种是使用 substr 截取$chars中的任意一位字符；
-            // 第二种是取字符数组 $chars 的任意元素
-            // $password .= substr($chars, mt_rand(0, strlen($chars) - 1), 1);
-            $password .= $chars[ mt_rand(0, strlen($chars) - 1) ];
-        }
-        return $password;
+    function generate_password($username, $length = 8 ) {
+        $password = md5($username, false);
+        return substr($password, 0, 10);
     }
     $username = $_GET["username"];
     $steem_user = isAuthed();
@@ -58,11 +48,11 @@ get_header(); ?>
         if($user == false)
         {
             //查找失败，表示用户没有创建，创建用户
-            $profile = $steem_user['account']['json_metadata']['profile'];
+            $profile = json_decode($steem_user['account']['json_metadata'], true)['profile'];
             $userdata = array(
                 //'ID' => $user_id, // ID of existing user
-                'user_login' => $steem_user['user'],
-                'user_pass' => generate_password(), // no plain password here!
+                'user_login' => $username,
+                'user_pass' => generate_password($username), // no plain password here!
                 'user_url' => $profile['website'],
                 'display_name' => $profile['name'],
                 'nickname' => $profile['name'],
@@ -76,25 +66,18 @@ get_header(); ?>
             //成功
             //echo 'ss';
             $user_id = $user->ID;
-        }       
-
-        // 登录
-        //echo 'user id:'.$user_id;
-        //echo 'user name:'.$username;
-        $creds = array();
-        $creds['user_login'] = $username;
-        $creds['user_password'] = 'hello';
-        $creds['remember'] = false;
-        $user = wp_signon( $creds, false );
-        // wp_set_current_user($user_id, $username);
-        // //echo 'setted uset: '.$setted_user->ID;
-        // wp_set_auth_cookie($user_id);
-        // do_action('wp_login', $username, $user);
-        // echo "You are logged in as $username";
-    }else{
-        echo "failed";   
-    }        
+        }    
     ?>
+    <form name="loginform" method="post" action="http://steemian.io/login-page">    
+        <p class="submit">
+            <input type="hidden" name="log" value="<?php echo $username; ?>" />
+            <input type="hidden" name="pwd" value="<?php echo generate_password($username); ?>" />
+            <input type="hidden" name="remember" value="1" />
+            <button type="submit">WordPress Login</button>
+        </p>
+    </form>
+    
+    <?php } ?>
   </div>
   <!-- 失败时显示的div -->
   <div ng-hide="isAuth()">
